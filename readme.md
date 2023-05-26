@@ -21,3 +21,4 @@ GA_PSWD=
 
 For my use case, the URL is https://olightstore.com.  The LOGIN_METHOD options are UN_PW for basic username and password or GOOGLE for Google Authentication.  The website also supports Facebook login but I haven't implemented that because I don't use it.  
 
+NOTE: The GOOGLE method is not working at the moment.  The error message states the browser is not secure.
