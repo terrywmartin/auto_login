@@ -21,4 +21,12 @@ GA_PSWD=
 
 For my use case, the URL is https://olightstore.com.  The LOGIN_METHOD options are UN_PW for basic username and password or GOOGLE for Google Authentication.  The website also supports Facebook login but I haven't implemented that because I don't use it.  
 
-NOTE: The GOOGLE method is not working at the moment.  The error message states the browser is not secure.
+**NOTE: The GOOGLE method is not working at the moment.  The error message states the browser is not secure.**
+
+I have a bat file that runs the Python script.
+
+The file looks similar to this.  I use venv for my virtual environment.  Replace {path} with the path to your Python script.
+
+```
+venv\Scripts\python.exe  {path}\login.py
+```
