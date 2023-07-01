@@ -11,16 +11,31 @@ This project uses Python and Selenium.
 You'll need a .env file with the following values:
 
 ```
-URL=
-LOGIN_METHOD=UN_PW
-UN=
-PSWD=
+URLS=
 
-GA_PSWD=
+LOGIN_METHOD=UN_PW
+UN0=
+PSWD0=
+PAGELOAD0= XPATH for element to see if page loaded
+LOGINBUTTON0= XPATH for login button/link
+UNINPUT0= XPATH for the username input
+PWINPUT0= XPATH for the password input
+SIGNINBUTTON0= XPATH for the login button
+AFTERSIGNIN0= XPATH for element to wait for page to load
+
+UN1=
+PSWD1=
+PAGELOAD1=
+LOGINBUTTON1=
+UNINPUT1=
+PWINPUT1=
+SIGNINBUTTON1=
+AFTERSIGNIN1=
 ```
 
 For my use case, the URL is https://olightstore.com.  The LOGIN_METHOD options are UN_PW for basic username and password or GOOGLE for Google Authentication.  The website also supports Facebook login but I haven't implemented that because I don't use it.  
 
+I added support for multiple URLS.  The URLS variable now holds a comma delimited list of URLs.  I had another website I wanted to login to and, thankfully, the process was the same.  Just enter the Xpath for each component. 
 **NOTE: The GOOGLE method is not working at the moment.  The error message states the browser is not secure.**
 
 I have a bat file that runs the Python script.
