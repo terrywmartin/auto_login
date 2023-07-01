@@ -10,6 +10,7 @@ import time
 
 def logout_user(d, a):
     # sign out if the user logged in
+    # //button[contains(concat(' ',normalize-space(@class),' '),' AccountPanelMenu_target-logout ')]
     try:
         account_menu = WebDriverWait(driver, timeout=5).until(lambda d: d.find_element(By.XPATH,'//div[@class="logout"]'))
         a.move_to_element(account_menu).perform()
@@ -20,10 +21,14 @@ def logout_user(d, a):
         pass
 
 
-def login_user(d, a):
+def login_user(d, a, i):
+    
     try:
-        login_element = d.find_element(By.XPATH,'//span[.="Login"]')
-        WebDriverWait(d, timeout=10).until(lambda d: d.find_element(By.XPATH,'//span[.="Login"]'))
+        print(i)
+        login_button = str(os.getenv("LOGINBUTTON"+str(i)))
+        print(login_button)
+        login_element = d.find_element(By.XPATH,str(login_button))
+        WebDriverWait(d, timeout=10).until(lambda d: d.find_element(By.XPATH,login_button))
     except NoSuchElementException:
         print("Cannot find the login ")
         return -1
@@ -34,28 +39,19 @@ def login_user(d, a):
     if login_method == "UN_PW":
         #username and password auth
         try:
-            username_element = WebDriverWait(d, timeout=10).until(lambda d: d.find_element(By.XPATH,'//form[@class="el-form login-form"]/div[contains(@class,"login-username")]/div/div/div/input'))
+            username_input = str(os.getenv("UNINPUT"+str(i)))
+            print(username_input)
+            username_element = WebDriverWait(d, timeout=10).until(lambda d: d.find_element(By.XPATH,username_input))
         except:
             return -1
-        username_element.send_keys(os.getenv("UN"))
-        d.find_element(By.XPATH,'//form[@class="el-form login-form"]/div[contains(@class,"login-password")]/div/div/input').send_keys(os.getenv("PSWD"))
-        d.find_element(By.XPATH, '//button/span[.="Log in"]/..').click()
-        WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.XPATH,'//div[@class="logout"]'))
-    elif login_method == "GOOGLE":
-        try:
-            google_login = WebDriverWait(d, timeout=10).until(lambda d: d.find_element(By.XPATH,'//span/img[@src="https://us.olicdn.com/Google.png" ]/..'))
-            google_login.click()
-            
-            ga_email = d.find_element(By.XPATH, '//input[@id="identifierId"]').send_keys(os.getenv("UN"))
-            d.find_element(By.XPATH, '//span[.="Next"]/..').click()
-            ga_password = WebDriverWait(d, timeout=10).until(lambda d: d.find_element(By.XPATH,'//input[@name="Passwd"]'))
-            ga_password.send_keys(os.getenv("GA_PSWD"))
-            d.find_element(By.XPATH, '//span[.="Next"]/..').click()
-
-        except NoSuchElementException:
-            print("Trouble logging in with Google Auth. ")
-            exit(1)
-
+        username_element.send_keys(os.getenv("UN"+str(i)))
+        password_input = os.getenv("PWINPUT"+str(i))
+        d.find_element(By.XPATH,str(password_input)).send_keys(os.getenv("PSWD"+str(i)))
+        sign_in_button = os.getenv("SIGNINBUTTON"+str(i))
+        d.find_element(By.XPATH, str(sign_in_button)).click()
+        after_sign_in_wait = os.getenv("AFTERSIGNIN"+str(i))
+    WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.XPATH,str(after_sign_in_wait)))
+       
     return 0
 
 
@@ -68,25 +64,29 @@ if __name__ == '__main__':
     #Chrome
     driver = webdriver.Chrome()
 
-    url = os.getenv("URL", None)
+    urls = os.getenv("URLS", None)
 
-    if url == None:
+    if urls == None:
         print("Please supply a URL.")
         exit(1)
 
-    driver.get(url)
-    actions = ActionChains(driver)
-    try:
-        WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.XPATH,'//span[.="Messages"]'))
-    except TimeoutError:
-        print("Page did not load.")
-        exit(1)
-    driver.maximize_window()
-    logout_user(driver, actions)    
+    for i, url in enumerate(urls.split(",")):
+        print(i)
+        wait_element = os.getenv("PAGELOAD"+str(i))
+        print(wait_element)
+        driver.get(url)
+        actions = ActionChains(driver)
+        try:
+            WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.XPATH,str(wait_element)))
+        except TimeoutError:
+            print("Page did not load.")
+            exit(1)
+        driver.maximize_window()
+        #logout_user(driver, actions)    
 
-    resp = -1
-    while resp == -1:
-        resp = login_user(driver, actions)
+        #resp = -1
+        #while resp == -1:
+        resp = login_user(driver, actions,i)
 
-    logout_user(driver, actions)    
+    #logout_user(driver, actions)    
 
